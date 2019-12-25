@@ -88,11 +88,14 @@ def do_request(block, buf):
         from requests.packages.urllib3.exceptions import InsecureRequestWarning
         requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
+    if len(data) > 0:
+        data = data.encode(encoding='UTF-8')
+
     response = requests.request(method,
                                 url,
                                 verify=verify_ssl,
                                 headers=headers,
-                                data=data.encode(encoding='UTF-8'),
+                                data=data,
                                 files=files)
     content_type = response.headers.get('Content-Type', '').split(';')[0]
 
