@@ -19,3 +19,13 @@ key1=value1
 key2=value2
 key3=!file(/tmp/sample.txt)
 key4=!content(my sample content)
+
+# Globle Parameters
+# $host = http://httpbin.org
+GET $host/api.php
+
+# Local Parameters
+# :localhost = http://httpbin.org
+GET :localhost
+cookie::host
+

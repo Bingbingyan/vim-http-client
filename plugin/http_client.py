@@ -88,8 +88,11 @@ def do_request(block, buf):
         from requests.packages.urllib3.exceptions import InsecureRequestWarning
         requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
-    if len(data) > 0:
+    if len(data) > 0 and isinstance(data, str):
         data = data.encode(encoding='UTF-8')
+
+    if not url.startswith("http"):
+        return [url, "url not correct!"], 'text/html'
 
     response = requests.request(method,
                                 url,
@@ -112,9 +115,17 @@ def do_request(block, buf):
         except ValueError:
             pass
 
-    display = (response_body.split('\n') +
-               ['', '// status code: %s' % response.status_code] +
-               ['// %s: %s' % (k, v) for k, v in response.headers.items()])
+    if len(headers) > 0:
+        display_headers = ['', '//REQUEST HEADERS:'] + [
+            '// %s: %s' % (k, v) for k, v in headers.items()
+        ]
+    else:
+        display_headers = []
+
+    display = (response_body.split('\n') + display_headers + [
+        '', '//RESPONSE HEADERS:',
+        '// status code: %s' % response.status_code
+    ] + ['// %s: %s' % (k, v) for k, v in response.headers.items()])
 
     return display, content_type
 
