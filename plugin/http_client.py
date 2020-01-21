@@ -106,8 +106,8 @@ def do_request(block, buf):
         response.encoding = 'utf-8'
 
     response_body = response.text
-    if JSON_REGEX.search(content_type):
-        content_type = 'application/json'
+    # if JSON_REGEX.search(content_type):
+    if content_type == 'application/json':
         try:
             response_body = json.dumps(
                 json.loads(response.text),
@@ -125,10 +125,6 @@ def do_request(block, buf):
     else:
         display_headers = []
 
-    # try:
-    #     response_body = response_body.encoding('utf-8')
-    # except Exception:
-    #     pass
     display = (response_body.split('\n') + display_headers + [
         '', '//RESPONSE HEADERS:',
         '// status code: %s' % response.status_code
