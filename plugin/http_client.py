@@ -102,6 +102,9 @@ def do_request(block, buf):
                                 files=files)
     content_type = response.headers.get('Content-Type', '').split(';')[0]
 
+    if content_type == 'text/html':
+        response.encoding = 'utf-8'
+
     response_body = response.text
     if JSON_REGEX.search(content_type):
         content_type = 'application/json'
@@ -122,6 +125,10 @@ def do_request(block, buf):
     else:
         display_headers = []
 
+    # try:
+    #     response_body = response_body.encoding('utf-8')
+    # except Exception:
+    #     pass
     display = (response_body.split('\n') + display_headers + [
         '', '//RESPONSE HEADERS:',
         '// status code: %s' % response.status_code
@@ -266,7 +273,7 @@ def run_tests():
         ], []))
     test(resp['files']['formc'] == SAMPLE_FILE_CONTENT,
          'Files given as path are sent properly.')
-    test(not 'formc' in resp['form'], 'File not included in form data.')
+    test('formc' not in resp['form'], 'File not included in form data.')
     os.unlink(temp_file.name)
 
     resp = extract_json(
